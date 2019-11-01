@@ -1,0 +1,80 @@
+#+TITLE: Emacs init.org
+#+AUTHOR: LaFr4nc3
+#+BABLE: :cache yes
+#+PROPERTY: header-args :tangle yes
+
+* 設定
+
+** メタ
+#+BEGIN_SRC emacs-lisp :tangle no
+  (require 'org-install)
+  (defvar emacs-init-org-config-dir (concat user-emacs-directory "config/"))
+  (org-babel-load-file (expand-file-name "init.org" emacs-init-org-config-dir))
+#+END_SRC
+
+** パッケージ管理
+#+BEGIN_SRC emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  ;; use-package
+  (straight-use-package 'use-package)
+
+  ;; use-packageをstraight.elにフォールバックする
+  (setq straight-use-package-by-default t)
+#+END_SRC
+
+** テーマ
+#+BEGIN_SRC emacs-lisp
+  (use-package monokai-theme
+    :init
+    (load-theme 'monokai t))
+#+END_SRC
+
+** 画面表示
+
+*** ツールバー削除
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+#+END_SRC
+
+*** フォント
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil :family "HackGen" :height 105)
+#+END_SRC
+
+** 効率化
+
+*** smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :diminish ""
+    :config
+    (use-package smartparens-config
+      :straight nil)
+    (sp-use-smartparens-bindings)
+    (smartparens-global-strict-mode t)
+    (show-smartparens-global-mode t)
+    (smartparens-global-mode t))
+#+END_SRC
+** ファイル操作
+
+*** tramp
+#+BEGIN_SRC emacs-lisp
+  (use-package tramp
+    :straight nil
+    :config
+    (setenv "SHELL" "/bin/bash"))
+#+END_SRC
