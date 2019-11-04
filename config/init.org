@@ -13,6 +13,8 @@
 #+END_SRC
 
 ** パッケージ管理
+
+*** straight.el
 #+BEGIN_SRC emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -26,17 +28,24 @@
 	(goto-char (point-max))
 	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
+#+END_SRC
 
-  ;; use-package
-  (straight-use-package 'use-package)
+*** leaf.el
 
-  ;; use-packageをstraight.elにフォールバックする
-  (setq straight-use-package-by-default t)
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'leaf)
+  (straight-use-package 'leaf-keywords)
+  (leaf leaf-keywords
+    :config
+    (leaf-keywords-init)
+    (leaf diminish
+      :straight t))
 #+END_SRC
 
 ** テーマ
 #+BEGIN_SRC emacs-lisp
-  (use-package monokai-theme
+  (leaf monokai-theme
+    :straight t
     :init
     (load-theme 'monokai t))
 #+END_SRC
@@ -59,22 +68,13 @@
 
 *** smartparens
 #+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :diminish ""
+  (leaf smartparens
+    :straight t
+    :diminish t
     :config
-    (use-package smartparens-config
-      :straight nil)
+    (leaf smartparens-config)
     (sp-use-smartparens-bindings)
     (smartparens-global-strict-mode t)
     (show-smartparens-global-mode t)
     (smartparens-global-mode t))
-#+END_SRC
-** ファイル操作
-
-*** tramp
-#+BEGIN_SRC emacs-lisp
-  (use-package tramp
-    :straight nil
-    :config
-    (setenv "SHELL" "/bin/bash"))
 #+END_SRC
